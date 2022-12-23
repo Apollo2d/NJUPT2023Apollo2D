@@ -1,0 +1,6 @@
+[submodule "heliose-base"]
+	path = heliose-base
+	url = https://github.com/helios-base/helios-base.git
+[submodule "your-team"]
+	path = your-team
+	url = https://github.com/helios-base/helios-base.git
