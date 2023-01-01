@@ -52,13 +52,12 @@ class PenaltyTrainer : public rcsc::TrainerAgent {
     virtual void handlePlayerType();
 
    private:
-    //void sampleAction();
     void recoverForever();
     void doSubstitute();
     void doKeepaway();
   
    private:
-    unsigned M_MAX_ROUND;
+    const unsigned M_MAX_ROUND = 30;
     
     bool before_round;
     unsigned round;
