@@ -65,9 +65,7 @@ class PenaltyTrainer : public rcsc::TrainerAgent {
     enum {
       SCORE = 0, CAUGHT, MISS
     } result;
-    struct {
-      unsigned score = 0, caught = 0, miss = 0;
-    } statistic;
+    unsigned score = 0, miss = 0;
     bool keeper_dir, ball_dir;
    private:
     void initPenalty();

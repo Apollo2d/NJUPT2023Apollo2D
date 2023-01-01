@@ -41,6 +41,8 @@
 
 #include "penalty_trainer.h"
 
+#include <iomanip>
+
 using namespace rcsc;
 
 /*-------------------------------------------------------------------*/
@@ -291,8 +293,8 @@ void PenaltyTrainer::initPenalty() {
     doChangeMode(PM_PenaltySetup_Left);
     before_round = false; 
     round++;   
-    std::cout << "ROUND " << round << std::endl();
-    std::cout << world().teamNameLeft() << "vs." << world().teamNameRight() << std::endl();
+    std::cout << "ROUND " << round << std::endl;
+    std::cout << world().teamNameLeft() << "vs." << world().teamNameRight() << std::endl;
 }
 
 void PenaltyTrainer::analyse() {
@@ -306,6 +308,10 @@ void PenaltyTrainer::analyse() {
 }
 
 void PenaltyTrainer::finalise() {
+    if (result == SCORE)
+        score++;
+    else if (result == MISS)
+        miss++;
     print();
     before_round = true;
     if (round == M_MAX_ROUND) {
@@ -316,6 +322,17 @@ void PenaltyTrainer::finalise() {
 
 void PenaltyTrainer::print() {
     switch (result) {
-        std::
+        case MISS:std::cout << world().teamNameRight() << " missed!" << std::endl;
+        case SCORE:std::cout << world().teamNameRight() << " scored!" << std::endl;
+        case CAUGHT:std::cout << world().teamNameLeft() << " caught it!" << std::endl;
     }
+}
+
+void PenaltyTrainer::conclude() {
+    std::cout << "Training is over." << std::endl;
+    std::cout << world().teamNameLeft() << " saved " << M_MAX_ROUND - score - miss << '.' << std::endl;
+    std::cout << "Save Ratio is " << std::fixed << std::setprecision(1) << M_MAX_ROUND - score - miss * 100.0 / (M_MAX_ROUND - miss ? M_MAX_ROUND - miss : 1) << "%." << std::endl;
+    std::cout << world().teamNameRight() << " scored " << score << '.' << std::endl;
+    std::cout << "Score Ratio is " << std::fixed << std::setprecision(1) << score * 100.0 / M_MAX_ROUND << "%." << std::endl;
+    std::cout << "Miss Ratio is " << std::fixed << std::setprecision(1) << miss * 100.0 / M_MAX_ROUND << "%." << std::endl;
 }
