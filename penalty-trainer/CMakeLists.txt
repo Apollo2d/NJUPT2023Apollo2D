@@ -1,12 +1,13 @@
 # trainer
-aux_source_directory(. HFO)
 
-add_executable(hfo_trainer
-  ${HFO}
+aux_source_directory(. TRAINER)
+
+add_executable(penalty_trainer
+  ${TRAINER}
   main_trainer.cpp
   )
 
-target_include_directories(hfo_trainer
+target_include_directories(penalty_trainer
   PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_BINARY_DIR}
@@ -15,16 +16,16 @@ target_include_directories(hfo_trainer
   ${LIBRCSC_INCLUDE_DIR}
   )
 
-target_link_libraries(hfo_trainer
+target_link_libraries(penalty_trainer
   PUBLIC
   ${LIBRCSC_LIB}
   Boost::system
   ZLIB::ZLIB
   )
 
-set_target_properties(hfo_trainer
+set_target_properties(penalty_trainer
   PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${OUTPUT_NAME}
-  RUNTIME_OUTPUT_NAME ${CMAKE_PROJECT_NAME}_hfo_trainer
+  RUNTIME_OUTPUT_NAME ${CMAKE_PROJECT_NAME}_penalty_trainer
   )
 
