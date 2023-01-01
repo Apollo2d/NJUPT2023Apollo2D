@@ -211,7 +211,8 @@ void PenaltyTrainer::initPenalty() {
     before_round = false; 
     round++;   
     std::cout << "ROUND " << round << std::endl;
-    std::cout << world().teamNameLeft() << "vs." << world().teamNameRight() << std::endl;
+    std::cout << world().teamNameLeft() << " vs. " << world().teamNameRight() << std::endl;
+    doChangeMode(PM_PenaltyReady_Left);
 }
 
 void PenaltyTrainer::analyse() {
