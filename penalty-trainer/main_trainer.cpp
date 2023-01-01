@@ -31,36 +31,38 @@
 #include <rcsc/common/abstract_client.h>
 #include <rcsc/param/cmd_line_parser.h>
 
-#include <cerrno>     // errno
-#include <csignal>    // sigaction
-#include <cstdlib>    // exit
-#include <cstring>    // strerror
+#include <cerrno>  // errno
+#include <csignal> // sigaction
+#include <cstdlib> // exit
+#include <cstring> // strerror
 #include <iostream>
 
-#include "sample_trainer.h"
+#include "penalty_trainer.h"
 
 namespace {
 
-SampleTrainer                           agent;
-std::shared_ptr<rcsc::AbstractClient> client;
+    PenaltyTrainer agent;
+    std::shared_ptr<rcsc::AbstractClient> client;
+
+    /*-------------------------------------------------------------------*/
+    void sig_exit_handle(int)
+    {
+        std::cerr << "Killed. Exiting trainer..." << std::endl;
+        agent.finalize();
+        std::exit(EXIT_FAILURE);
+    }
+
+} // namespace
 
 /*-------------------------------------------------------------------*/
-void sig_exit_handle(int) {
-    std::cerr << "Killed. Exiting trainer..." << std::endl;
-    agent.finalize();
-    std::exit(EXIT_FAILURE);
-}
-
-}    // namespace
-
-/*-------------------------------------------------------------------*/
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
     struct sigaction sig_action;
     sig_action.sa_handler = &sig_exit_handle;
-    sig_action.sa_flags   = 0;
-    if(sigaction(SIGINT, &sig_action, NULL) != 0 ||
-       sigaction(SIGTERM, &sig_action, NULL) != 0 ||
-       sigaction(SIGHUP, &sig_action, NULL) != 0)
+    sig_action.sa_flags = 0;
+    if (sigaction(SIGINT, &sig_action, NULL) != 0 ||
+        sigaction(SIGTERM, &sig_action, NULL) != 0 ||
+        sigaction(SIGHUP, &sig_action, NULL) != 0)
     /*if ( signal(SIGINT, &sigExitHandle) == SIG_ERR
       || signal(SIGTERM, &sigExitHandle) == SIG_ERR
       || signal(SIGHUP, &sigExitHandle) == SIG_ERR )*/
@@ -73,7 +75,10 @@ int main(int argc, char** argv) {
 
     {
         rcsc::CmdLineParser cmd_parser(argc, argv);
-        if(!agent.init(cmd_parser)) { return EXIT_FAILURE; }
+        if (!agent.init(cmd_parser))
+        {
+            return EXIT_FAILURE;
+        }
     }
 
     client = agent.createConsoleClient();
@@ -82,7 +87,7 @@ int main(int argc, char** argv) {
     /*
       You should add your copyright message here.
      */
-    std::cout 
+    std::cout
         << "*****************************************************************\n"
         << " This program is modified by Apollo2D\n"
         << " Copyright 2022-2023. Daedale.\n"
