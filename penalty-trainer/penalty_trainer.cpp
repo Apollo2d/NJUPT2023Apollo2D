@@ -199,27 +199,33 @@ void PenaltyTrainer::doKeepaway()
 }
 
 void PenaltyTrainer::doPenalty()
-{   if (round % 5 == 0)
+{   
+    if (!world().gameMode().isPenaltyKickMode())
+        return;
+    if (round % 5 == 0)
         doRecover();
     if (before_round)
         initPenalty();
     analyse();
 }
 
-void PenaltyTrainer::initPenalty() {
-    doChangeMode(PM_PenaltySetup_Left);
+void PenaltyTrainer::initPenalty() {    
     before_round = false; 
     round++;   
     std::cout << "ROUND " << round << std::endl;
     std::cout << world().teamNameLeft() << " vs. " << world().teamNameRight() << std::endl;
+    doChangeMode(PM_PenaltySetup_Left);
     doChangeMode(PM_PenaltyReady_Left);
+    doMoveBall(rcsc::Vector2D(-rcsc::ServerParam::DEFAULT_PEN_DIST_X, 0), rcsc::Vector2D(0, 0));
+    doMovePlayer(world().teamNameLeft(), 1, rcsc::Vector2D(-50, 0));
+    doMovePlayer(world().teamNameRight(), 1, rcsc::Vector2D(rcsc::ServerParam::DEFAULT_PENALTY_SPOT_DIST - 50, 0));
 }
 
 void PenaltyTrainer::analyse() {
     switch (world().gameMode().type()) {
-        case PM_PenaltyMiss_Left:result = MISS;break;
-        case PM_PenaltyScore_Left:result = SCORE;break;
-        case PM_PenaltyTaken_Left:result = CAUGHT;break;
+        case rcsc::GameMode::PenaltyMiss_:result = MISS;break;
+        case rcsc::GameMode::PenaltyScore_:result = SCORE;break;
+        case rcsc::GameMode::PenaltyTaken_:result = CAUGHT;break;
         default:return;
     }
     finalise();

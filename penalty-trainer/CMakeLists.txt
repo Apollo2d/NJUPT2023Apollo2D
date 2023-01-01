@@ -25,7 +25,7 @@ target_link_libraries(penalty_trainer
 
 set_target_properties(penalty_trainer
   PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${OUTPUT_NAME}
+  RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/../bin
   RUNTIME_OUTPUT_NAME ${CMAKE_PROJECT_NAME}_penalty_trainer
   )
 
