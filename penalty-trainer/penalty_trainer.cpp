@@ -47,7 +47,11 @@ using namespace rcsc;
 /*!
 
  */
-PenaltyTrainer::PenaltyTrainer() : TrainerAgent() {}
+PenaltyTrainer::PenaltyTrainer()
+    : TrainerAgent(),
+      before_round(true)
+{
+}
 
 /*-------------------------------------------------------------------*/
 /*!
@@ -59,30 +63,36 @@ PenaltyTrainer::~PenaltyTrainer() {}
 /*!
 
  */
-bool PenaltyTrainer::initImpl(CmdLineParser& cmd_parser) {
+bool PenaltyTrainer::initImpl(CmdLineParser &cmd_parser)
+{
     bool result = TrainerAgent::initImpl(cmd_parser);
 
-/* Example
+    /* Example
+        ParamMap my_params;
+
+        std::string author;
+        my_params.add()
+            ("Author", "", &author, "Daedale");
+            //( Key, ShortKey(Ommitable), &Value, Description )
+
+        cmd_parser.parse( my_params );
+    */
+
     ParamMap my_params;
-
-    std::string author;
     my_params.add()
-        ("Author", "", &author, "Daedale");
-        //( Key, ShortKey(Ommitable), &Value, Description )
+        ("max round number", "", &M_MAX_ROUND);
 
-    cmd_parser.parse( my_params );
-*/
-    ParamMap penalty_params;
+    cmd_parser.parse(my_params);
 
-    cmd_parser.parse( penalty_params );
-    if(cmd_parser.failed()) {
-        std::cerr << "coach: ***WARNING*** detected unsupported options: ";
+    if (cmd_parser.failed()) {
+        std::cerr << "hfo trainer: ***WARNING*** detected unsupported options: ";
         cmd_parser.print(std::cerr);
         std::cerr << std::endl;
     }
 
-    if(!result) { return false; }
-
+    if (!result) {
+        return false;
+    }
     //////////////////////////////////////////////////////////////////
     // Add your code here.
     //////////////////////////////////////////////////////////////////
@@ -94,8 +104,10 @@ bool PenaltyTrainer::initImpl(CmdLineParser& cmd_parser) {
 /*!
 
  */
-void PenaltyTrainer::actionImpl() {
-    if(world().teamNameLeft().empty()) {
+void PenaltyTrainer::actionImpl()
+{
+    if (world().teamNameLeft().empty() || world().teamNameRight().empty())
+    {
         doTeamNames();
         return;
     }
@@ -106,7 +118,8 @@ void PenaltyTrainer::actionImpl() {
     // sampleAction();
     // recoverForever();
     // doSubstitute();
-    doKeepaway();
+    // doKeepaway();
+    doPenalty();
 }
 
 /*-------------------------------------------------------------------*/
@@ -136,7 +149,7 @@ void PenaltyTrainer::handlePlayerType() {}
 /*-------------------------------------------------------------------*/
 /*!
 
- */
+
 void PenaltyTrainer::sampleAction() {
     // sample training to test a ball interception.
 
@@ -202,15 +215,21 @@ void PenaltyTrainer::sampleAction() {
             break;
     }
 }
+*/
 
 /*-------------------------------------------------------------------*/
 /*!
 
  */
-void PenaltyTrainer::recoverForever() {
-    if(world().playersLeft().empty()) { return; }
+void PenaltyTrainer::recoverForever()
+{
+    if (world().playersLeft().empty())
+    {
+        return;
+    }
 
-    if(world().time().stopped() == 0 && world().time().cycle() % 50 == 0) {
+    if (world().time().stopped() == 0 && world().time().cycle() % 50 == 0)
+    {
         // recover stamina
         doRecover();
     }
@@ -220,14 +239,17 @@ void PenaltyTrainer::recoverForever() {
 /*!
 
  */
-void PenaltyTrainer::doSubstitute() {
+void PenaltyTrainer::doSubstitute()
+{
     static bool s_substitute = false;
-    if(!s_substitute && world().time().cycle() == 0 &&
-       world().time().stopped() >= 10) {
+    if (!s_substitute && world().time().cycle() == 0 &&
+        world().time().stopped() >= 10)
+    {
         std::cerr << "trainer " << world().time()
                   << " team name = " << world().teamNameLeft() << std::endl;
 
-        if(!world().teamNameLeft().empty()) {
+        if (!world().teamNameLeft().empty())
+        {
             UniformInt uni(0, PlayerParam::i().ptMax());
             doChangePlayerType(world().teamNameLeft(), 1, uni());
 
@@ -235,8 +257,9 @@ void PenaltyTrainer::doSubstitute() {
         }
     }
 
-    if(world().time().stopped() == 0 && world().time().cycle() % 100 == 1 &&
-       !world().teamNameLeft().empty()) {
+    if (world().time().stopped() == 0 && world().time().cycle() % 100 == 1 &&
+        !world().teamNameLeft().empty())
+    {
         static int type = 0;
         doChangePlayerType(world().teamNameLeft(), 1, type);
         type = (type + 1) % PlayerParam::i().playerTypes();
@@ -247,9 +270,52 @@ void PenaltyTrainer::doSubstitute() {
 /*!
 
  */
-void PenaltyTrainer::doKeepaway() {
-    if(world().trainingTime() == world().time()) {
+void PenaltyTrainer::doKeepaway()
+{
+    if (world().trainingTime() == world().time())
+    {
         std::cerr << "trainer: " << world().time() << " keepaway training time."
                   << std::endl;
+    }
+}
+
+void PenaltyTrainer::doPenalty()
+{   if (round % 5 == 0)
+        doRecover();
+    if (before_round)
+        initPenalty();
+    analyse();
+}
+
+void PenaltyTrainer::initPenalty() {
+    doChangeMode(PM_PenaltySetup_Left);
+    before_round = false; 
+    round++;   
+    std::cout << "ROUND " << round << std::endl();
+    std::cout << world().teamNameLeft() << "vs." << world().teamNameRight() << std::endl();
+}
+
+void PenaltyTrainer::analyse() {
+    switch (world().gameMode().type()) {
+        case PM_PenaltyMiss_Left:result = MISS;break;
+        case PM_PenaltyScore_Left:result = SCORE;break;
+        case PM_PenaltyTaken_Left:result = CAUGHT;break;
+        default:return;
+    }
+    finalise();
+}
+
+void PenaltyTrainer::finalise() {
+    print();
+    before_round = true;
+    if (round == M_MAX_ROUND) {
+        conclude();
+        finalize();
+    }
+}
+
+void PenaltyTrainer::print() {
+    switch (result) {
+        std::
     }
 }

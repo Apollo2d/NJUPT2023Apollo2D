@@ -52,10 +52,30 @@ class PenaltyTrainer : public rcsc::TrainerAgent {
     virtual void handlePlayerType();
 
    private:
-    void sampleAction();
+    //void sampleAction();
     void recoverForever();
     void doSubstitute();
     void doKeepaway();
+  
+   private:
+    unsigned M_MAX_ROUND;
+    
+    bool before_round;
+    unsigned round;
+    enum {
+      SCORE = 0, CAUGHT, MISS
+    } result;
+    struct {
+      unsigned score = 0, caught = 0, miss = 0;
+    } statistic;
+    bool keeper_dir, ball_dir;
+   private:
+    void initPenalty();
+    void doPenalty();
+    void analyse();
+    void finalise();
+    void print();
+    void conclude();
 };
 
 #endif
