@@ -29,55 +29,62 @@
 
 #include <rcsc/trainer/trainer_agent.h>
 
-class PenaltyTrainer : public rcsc::TrainerAgent {
-   private:
-   public:
-    PenaltyTrainer();
+class PenaltyTrainer : public rcsc::TrainerAgent
+{
+private:
+public:
+  PenaltyTrainer();
 
-    virtual ~PenaltyTrainer();
+  virtual ~PenaltyTrainer();
 
-   protected:
-    /*!
-      You can override this method.
-      But you must call TrainerAgent::doInit() in this method.
-    */
-    virtual bool initImpl(rcsc::CmdLineParser& cmd_parser);
+protected:
+  /*!
+    You can override this method.
+    But you must call TrainerAgent::doInit() in this method.
+  */
+  virtual bool initImpl(rcsc::CmdLineParser &cmd_parser);
 
-    //! main decision
-    virtual void actionImpl();
+  //! main decision
+  virtual void actionImpl();
 
-    virtual void handleInitMessage();
-    virtual void handleServerParam();
-    virtual void handlePlayerParam();
-    virtual void handlePlayerType();
+  virtual void handleInitMessage();
+  virtual void handleServerParam();
+  virtual void handlePlayerParam();
+  virtual void handlePlayerType();
 
-   private:
-    void recoverForever();
-    void doSubstitute();
-    void doKeepaway();
-  
-   private:
-    const unsigned M_MAX_ROUND = 30;
-    
-    bool before_round;
-    unsigned round;
-    enum {
-      SCORE = 0, CAUGHT, MISS
-    } result;
-    unsigned score = 0, miss = 0;
-    bool keeper_dir, ball_dir;
-    enum {
-      BEFORE = 0, SETUP, READY, TAKEN
-    } status = TAKEN; 
-    long timer = -1;
-   private:
-    void initPenalty();
-    void doPenalty();
-    bool pend();
-    void analyse();
-    void finalise();
-    void print();
-    void conclude();
+private:
+  unsigned M_MAX_ROUND = 30;
+  rcsc::Vector2D prev_ball_pos;
+
+  bool before_round;
+  unsigned round;
+  enum
+  {
+    SCORE = 0,
+    CAUGHT,
+    MISS
+  } result;
+  unsigned score = 0, miss = 0;
+  bool keeper_dir, ball_dir;
+  enum
+  {
+    BEFORE = 0,
+    SETUP,
+    READY,
+    TAKEN
+  } status = TAKEN;
+  long timer = -1;
+
+private:
+  void initPenalty();
+  void doPenalty();
+  bool pend();
+  void analyse();
+  void finalise();
+  void print();
+  void conclude();
+  bool crossGoalLine(const rcsc::SideID side, const rcsc::Vector2D &prev_ball_pos);
+  bool caughtBall();
 };
 
 #endif
