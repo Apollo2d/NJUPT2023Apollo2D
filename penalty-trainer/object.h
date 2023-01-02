@@ -133,7 +133,7 @@ public:
 
     const PVector & normalize( const double l = 1.0 )
       {
-          *this *= ( l / std::max( r(), EPS ) );
+          *this *= ( l / std::max( r(), rcsc::EPS ) );
           return *this;
       }
 

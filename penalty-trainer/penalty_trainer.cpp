@@ -234,7 +234,6 @@ bool PenaltyTrainer::crossGoalLine(const SideID side, const Vector2D& prev_ball_
 bool PenaltyTrainer::caughtBall() {
     const ServerParam & SP = ServerParam::instance();
 
-    auto M_goalie_catch_ban = SP.catchBanCycle();
     auto goalie = world().playersRight().front();
 
     const double this_catch_area_delta = SP.catchAreaLength() * ( goalie->playerTypePtr()->catchAreaLengthStretch() - 1.0 );
