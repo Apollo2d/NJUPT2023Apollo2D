@@ -40,6 +40,7 @@
 #include <rcsc/trainer/trainer_config.h>
 
 #include "penalty_trainer.h"
+#include "object.h"
 
 #include <iomanip>
 
@@ -248,7 +249,8 @@ bool PenaltyTrainer::caughtBall() {
                                PVector( this_catch_area_l_min, SP.catchAreaWidth() ) );
     const double catch_angle = goalie->body().degree();
 
-    PVector	rotated_pos = world().ball().pos() - this->pos();
+    auto delta = world().ball().pos() - goalie->pos();
+    PVector rotated_pos(delta.x, delta.y);
     rotated_pos.rotate( -catch_angle );
 
     if ( ! max_catchable.inArea( rotated_pos ) )
