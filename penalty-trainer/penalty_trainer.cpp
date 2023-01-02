@@ -142,6 +142,7 @@ void PenaltyTrainer::doPenalty()
         doRecover();
     if (pend())
         analyse();
+    prev_ball_pos = world().ball().pos();
 }
 
 void PenaltyTrainer::initPenalty() { 
