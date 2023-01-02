@@ -66,9 +66,14 @@ class PenaltyTrainer : public rcsc::TrainerAgent {
     } result;
     unsigned score = 0, miss = 0;
     bool keeper_dir, ball_dir;
+    enum {
+      BEFORE = 0, SETUP, READY, TAKEN
+    } status = TAKEN; 
+    long timer = -1;
    private:
     void initPenalty();
     void doPenalty();
+    bool pend();
     void analyse();
     void finalise();
     void print();

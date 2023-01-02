@@ -97,10 +97,7 @@ bool PenaltyTrainer::initImpl(CmdLineParser &cmd_parser)
 void PenaltyTrainer::actionImpl()
 {
     if (world().teamNameLeft().empty() || world().teamNameRight().empty())
-    {
-        doTeamNames();
         return;
-    }
 
     //////////////////////////////////////////////////////////////////
     // Add your code here.
@@ -199,34 +196,51 @@ void PenaltyTrainer::doKeepaway()
 }
 
 void PenaltyTrainer::doPenalty()
-{   
-    if (!world().gameMode().isPenaltyKickMode())
-        return;
-    if (round % 5 == 0)
-        doRecover();
+{       
     if (before_round)
         initPenalty();
-    analyse();
+    if (round % 5 == 0)
+        doRecover();
+    if (pend())
+        analyse();
 }
 
-void PenaltyTrainer::initPenalty() {    
+void PenaltyTrainer::initPenalty() { 
     before_round = false; 
-    round++;   
-    std::cout << "ROUND " << round << std::endl;
-    std::cout << world().teamNameLeft() << " vs. " << world().teamNameRight() << std::endl;
+    round++;
+    status = BEFORE;
+    timer = world().time().cycle();
     doChangeMode(PM_PenaltySetup_Left);
-    doChangeMode(PM_PenaltyReady_Left);
-    doMoveBall(rcsc::Vector2D(-rcsc::ServerParam::DEFAULT_PEN_DIST_X, 0), rcsc::Vector2D(0, 0));
-    doMovePlayer(world().teamNameLeft(), 1, rcsc::Vector2D(-50, 0));
-    doMovePlayer(world().teamNameRight(), 1, rcsc::Vector2D(rcsc::ServerParam::DEFAULT_PENALTY_SPOT_DIST - 50, 0));
+}
+
+bool PenaltyTrainer::pend() {
+    switch (status) {
+        case TAKEN: return true;
+        case BEFORE: 
+            if (world().time().cycle() > timer + rcsc::ServerParam::DEFAULT_PEN_SETUP_WAIT) {
+                doChangeMode(PM_PenaltyReady_Left);
+                timer = world().time().cycle();
+                status = SETUP;
+            }break;
+        case SETUP:
+            if (world().time().cycle() > timer + rcsc::ServerParam::DEFAULT_PEN_READY_WAIT) {    
+                doChangeMode(PM_PenaltyTaken_Left);
+                status = READY;
+            }break;
+        case READY:   
+                std::cout << "ROUND " << round << std::endl;
+                std::cout << world().teamNameLeft() << " vs. " << world().teamNameRight() << std::endl;
+                status = TAKEN;
+                break;
+    }
+    return false;
 }
 
 void PenaltyTrainer::analyse() {
     switch (world().gameMode().type()) {
-        case rcsc::GameMode::PenaltyMiss_:result = MISS;break;
-        case rcsc::GameMode::PenaltyScore_:result = SCORE;break;
-        case rcsc::GameMode::PenaltyTaken_:result = CAUGHT;break;
-        default:return;
+        case rcsc::GameMode::PenaltyMiss_: result = CAUGHT;break;
+        case rcsc::GameMode::PenaltyScore_: result = SCORE;break;
+        default: return;
     }
     finalise();
 }
@@ -246,17 +260,16 @@ void PenaltyTrainer::finalise() {
 
 void PenaltyTrainer::print() {
     switch (result) {
-        case MISS:std::cout << world().teamNameRight() << " missed!" << std::endl;
-        case SCORE:std::cout << world().teamNameRight() << " scored!" << std::endl;
-        case CAUGHT:std::cout << world().teamNameLeft() << " caught it!" << std::endl;
+        case MISS:std::cout << world().teamNameRight() << " missed!" << std::endl;break;
+        case SCORE:std::cout << world().teamNameRight() << " scored!" << std::endl;break;
+        case CAUGHT:std::cout << world().teamNameLeft() << " caught it!" << std::endl;break;
     }
 }
 
 void PenaltyTrainer::conclude() {
     std::cout << "Training is over." << std::endl;
     std::cout << world().teamNameLeft() << " saved " << M_MAX_ROUND - score - miss << '.' << std::endl;
-    std::cout << "Save Ratio is " << std::fixed << std::setprecision(1) << M_MAX_ROUND - score - miss * 100.0 / (M_MAX_ROUND - miss ? M_MAX_ROUND - miss : 1) << "%." << std::endl;
+    std::cout << "Save Ratio is " << std::fixed << std::setprecision(1) << (M_MAX_ROUND - score - miss) * 100.0 / (M_MAX_ROUND - miss) << "%." << std::endl;
     std::cout << world().teamNameRight() << " scored " << score << '.' << std::endl;
     std::cout << "Score Ratio is " << std::fixed << std::setprecision(1) << score * 100.0 / M_MAX_ROUND << "%." << std::endl;
-    std::cout << "Miss Ratio is " << std::fixed << std::setprecision(1) << miss * 100.0 / M_MAX_ROUND << "%." << std::endl;
 }
