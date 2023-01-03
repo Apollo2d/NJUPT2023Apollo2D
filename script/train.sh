@@ -66,7 +66,7 @@ rcssmonitor &>/dev/null &
 ./taker.sh $default_taker &
 sleep 1
 ./keeper.sh $default_keeper &
-$trainer num=$i total=$time > train.log
+$trainer num=$i total=$time >> train.log
 kill $(pidof rcssserver) 
 kill $(pidof rcssmonitor)
 done
