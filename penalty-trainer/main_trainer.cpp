@@ -85,7 +85,7 @@ int main(int argc, char **argv)
     client = agent.createConsoleClient();
     agent.setClient(client);
 
-    if (PenaltyTrainer::round == 1)
+    if (PenaltyTrainer::ROUND_NUM == 1)
     {
 
         /*

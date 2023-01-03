@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 LIBPATH=/usr/local/lib
 if [ x"$LIBPATH" != x ]; then
   if [ x"$LD_LIBRARY_PATH" = x ]; then

@@ -32,8 +32,6 @@
 class PenaltyTrainer : public rcsc::TrainerAgent
 {
 public:
-  static unsigned round;
-public:
   PenaltyTrainer();
 
   virtual ~PenaltyTrainer();
@@ -53,9 +51,10 @@ protected:
   virtual void handlePlayerParam();
   virtual void handlePlayerType();
 
+public:
+  static unsigned ROUND_NUM;
+  static unsigned MAX_ROUND;
 private:
-  unsigned MAX_ROUND;
-
   rcsc::Vector2D prev_ball_pos;
   enum
   {

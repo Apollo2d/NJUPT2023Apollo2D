@@ -24,4 +24,4 @@ OPT="-h ${host} -t ${teamname}"
 OPT="${OPT} --config_dir ${config_dir}"
 OPT="${OPT} ${debugopt}"
 
-$player ${OPT} >> taker.log &>/dev/null
+$player ${OPT} &>taker.log 

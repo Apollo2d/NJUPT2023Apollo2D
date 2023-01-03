@@ -45,6 +45,8 @@
 
 using namespace rcsc;
 
+unsigned PenaltyTrainer::ROUND_NUM = 0;
+unsigned PenaltyTrainer::MAX_ROUND = 0;
 /*-------------------------------------------------------------------*/
 /*!
 
@@ -70,22 +72,14 @@ bool PenaltyTrainer::initImpl(CmdLineParser &cmd_parser)
 
     if(!result) { return false; }
 
-    ParamMap my_params;
-
-    my_params.add()("num", "", &round);
-    my_params.add()("total", "", &MAX_ROUND);
-
-    cmd_parser.parse( my_params );
-
-    if(cmd_parser.failed()) {
-        std::cerr << "coach: ***WARNING*** detected unsupported options: ";
-        cmd_parser.print(std::cerr);
-        std::cerr << std::endl;
-    }
     //////////////////////////////////////////////////////////////////
     // Add your code here.
-    if (round > MAX_ROUND)
+    if (cmd_parser.args().size() != 2)
         return false;
+    ROUND_NUM = std::stoul(cmd_parser.args().front().substr(4));
+    MAX_ROUND = std::stoul(cmd_parser.args().back().substr(6));
+    if  (ROUND_NUM > MAX_ROUND || !ROUND_NUM)
+        return false;    
     //////////////////////////////////////////////////////////////////
 
     return true;
@@ -139,6 +133,7 @@ void PenaltyTrainer::doPenalty()
 
 void PenaltyTrainer::initPenalty() { 
     doMoveBall(Vector2D(0, 0), Vector2D(0, 0));
+    doMovePlayer(world().teamNameLeft(), 1, Vector2D(0, 0));
     timer = world().time().cycle();
     doChangeMode(PM_PenaltySetup_Left);
     status = SETUP;
@@ -156,7 +151,7 @@ bool PenaltyTrainer::pend() {
             if (world().time().cycle() > timer + ServerParam::DEFAULT_PEN_READY_WAIT) {    
                 doChangeMode(PM_PenaltyTaken_Left);
                 status = TAKEN;  
-                std::cout << "ROUND " << round << std::endl;
+                std::cout << "ROUND " << ROUND_NUM << std::endl;
                 std::cout << world().teamNameLeft() << " vs. " << world().teamNameRight() << std::endl;
             }break;
         case TAKEN: return true;
