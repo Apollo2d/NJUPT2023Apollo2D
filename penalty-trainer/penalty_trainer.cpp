@@ -70,7 +70,10 @@ bool PenaltyTrainer::initImpl(CmdLineParser &cmd_parser)
 {
     bool result = TrainerAgent::initImpl(cmd_parser);
 
-    if(!result) { return false; }
+    if (!result)
+    {
+        return false;
+    }
 
     //////////////////////////////////////////////////////////////////
     // Add your code here.
@@ -78,8 +81,8 @@ bool PenaltyTrainer::initImpl(CmdLineParser &cmd_parser)
         return false;
     ROUND_NUM = std::stoul(cmd_parser.args().front().substr(4));
     MAX_ROUND = std::stoul(cmd_parser.args().back().substr(6));
-    if  (ROUND_NUM > MAX_ROUND || !ROUND_NUM)
-        return false;    
+    if (ROUND_NUM > MAX_ROUND || !ROUND_NUM)
+        return false;
     //////////////////////////////////////////////////////////////////
 
     return true;
@@ -122,16 +125,18 @@ void PenaltyTrainer::handlePlayerParam() {}
 void PenaltyTrainer::handlePlayerType() {}
 
 void PenaltyTrainer::doPenalty()
-{       
+{
     if (!status)
         initPenalty();
-    if (pend()) {
+    if (pend())
+    {
         analyse();
         prev_ball_pos = world().ball().pos();
     }
 }
 
-void PenaltyTrainer::initPenalty() { 
+void PenaltyTrainer::initPenalty()
+{
     doMoveBall(Vector2D(0, 0), Vector2D(0, 0));
     doMovePlayer(world().teamNameLeft(), 1, Vector2D(0, 0));
     doMovePlayer(world().teamNameRight(), 1, Vector2D(50, 0));
@@ -140,67 +145,83 @@ void PenaltyTrainer::initPenalty() {
     status = SETUP;
 }
 
-bool PenaltyTrainer::pend() {
-    switch (status) {        
-        case SETUP: 
-            if (world().time().cycle() > timer + ServerParam::DEFAULT_PEN_SETUP_WAIT) {
-                doChangeMode(PM_PenaltyReady_Left);
-                timer = world().time().cycle();
-                status = READY;
-            }break;
-        case READY:
-            if (world().time().cycle() > timer + ServerParam::DEFAULT_PEN_READY_WAIT) {    
-                doChangeMode(PM_PenaltyTaken_Left);
-                status = TAKEN;  
-                std::cout << "ROUND " << ROUND_NUM << std::endl;
-                std::cout << world().teamNameLeft() << " vs. " << world().teamNameRight() << std::endl;
-            }break;
-        case TAKEN: return true;
+bool PenaltyTrainer::pend()
+{
+    switch (status)
+    {
+    case SETUP:
+        if (world().time().cycle() > timer + ServerParam::DEFAULT_PEN_SETUP_WAIT)
+        {
+            doChangeMode(PM_PenaltyReady_Left);
+            timer = world().time().cycle();
+            status = READY;
+        }
+        break;
+    case READY:
+        if (world().time().cycle() > timer + ServerParam::DEFAULT_PEN_READY_WAIT)
+        {
+            doChangeMode(PM_PenaltyTaken_Left);
+            status = TAKEN;
+            std::cout << "ROUND " << ROUND_NUM << std::endl;
+            std::cout << world().teamNameLeft() << " vs. " << world().teamNameRight() << std::endl;
+        }
+        break;
+    case TAKEN:
+        return true;
     }
     return false;
 }
 
-bool PenaltyTrainer::crossGoalLine(const SideID side, const Vector2D& prev_ball_pos) {
-    const CoachWorldModel& wm = world();
-    if(prev_ball_pos.x == wm.ball().pos().x) {
+bool PenaltyTrainer::ballCaught(const CoachPlayerObject* goalie) {
+    //Todo
+    /////////////
+    /////////////
+    return false;
+}
+
+bool PenaltyTrainer::crossGoalLine(const SideID side, const Vector2D &prev_ball_pos)
+{
+    const CoachWorldModel &wm = world();
+    if (prev_ball_pos.x == wm.ball().pos().x)
+    {
         // ball cannot have crossed gline
         //          std::cout << time << ": vertcal movement\n";
         return false;
     }
-    if(std::fabs(wm.ball().pos().x) <=
-       ServerParam::DEFAULT_PITCH_LENGTH * 0.5 + ServerParam::i().ballSize()) {
+    if (std::fabs(wm.ball().pos().x) <=
+        ServerParam::DEFAULT_PITCH_LENGTH * 0.5 + ServerParam::i().ballSize())
+    {
         // ball hasn't crossed gline
         //          std::cout << time << ": hasn't crossed\n";
         return false;
     }
-    if((side * wm.ball().pos().x) >= 0) {
+    if ((side * wm.ball().pos().x) >= 0)
+    {
         // ball in wrong half
-        //std::cout << wm.time() << ": wrong_half\n";
+        // std::cout << wm.time() << ": wrong_half\n";
         return false;
     }
     return true;
 }
 
-void PenaltyTrainer::analyse() {
-    /*for (auto i : world().allPlayers())
-        if ( i->goalie() && ) {
+void PenaltyTrainer::analyse()
+{   //if catch ball
+    for (auto i : world().allPlayers())
+        if (i->goalie() && ballCaught(i))
+        {
             doChangeMode(PM_PenaltyMiss_Left);
             result = CAUGHT;
             finalise();
             return;
-    }*/
-    if ( crossGoalLine( SideID::RIGHT, prev_ball_pos ) ) {
+        }
+    if (crossGoalLine(SideID::RIGHT, prev_ball_pos))
+    {
         doChangeMode(PM_PenaltyScore_Left);
         result = SCORE;
         finalise();
         return;
     }
-    if ( std::fabs( world().ball().pos().x )
-                  > ServerParam::DEFAULT_PITCH_LENGTH * 0.5
-                  + ServerParam::instance().ballSize()
-                  || std::fabs( world().ball().pos().y )
-                  > ServerParam::DEFAULT_PITCH_WIDTH * 0.5
-                  + ServerParam::instance().ballSize() )
+    if (std::fabs(world().ball().pos().x) > ServerParam::DEFAULT_PITCH_LENGTH * 0.5 + ServerParam::instance().ballSize() || std::fabs(world().ball().pos().y) > ServerParam::DEFAULT_PITCH_WIDTH * 0.5 + ServerParam::instance().ballSize())
     {
         doChangeMode(PM_PenaltyMiss_Left);
         result = MISS;
@@ -209,7 +230,8 @@ void PenaltyTrainer::analyse() {
     }
 }
 
-void PenaltyTrainer::finalise() {
+void PenaltyTrainer::finalise()
+{
     if (result == SCORE)
         score++;
     else if (result == MISS)
@@ -219,10 +241,18 @@ void PenaltyTrainer::finalise() {
     exit(0);
 }
 
-void PenaltyTrainer::print() {
-    switch (result) {
-        case MISS:std::cout << world().teamNameRight() << " missed!" << std::endl;break;
-        case SCORE:std::cout << world().teamNameRight() << " scored!" << std::endl;break;
-        case CAUGHT:std::cout << world().teamNameLeft() << " caught it!" << std::endl;break;
+void PenaltyTrainer::print()
+{
+    switch (result)
+    {
+    case MISS:
+        std::cout << world().teamNameRight() << " missed!" << std::endl;
+        break;
+    case SCORE:
+        std::cout << world().teamNameRight() << " scored!" << std::endl;
+        break;
+    case CAUGHT:
+        std::cout << world().teamNameLeft() << " caught it!" << std::endl;
+        break;
     }
 }
