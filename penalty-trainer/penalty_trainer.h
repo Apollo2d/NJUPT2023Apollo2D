@@ -31,7 +31,8 @@
 
 class PenaltyTrainer : public rcsc::TrainerAgent
 {
-private:
+public:
+  static unsigned round;
 public:
   PenaltyTrainer();
 
@@ -53,11 +54,9 @@ protected:
   virtual void handlePlayerType();
 
 private:
-  unsigned M_MAX_ROUND = 30;
-  rcsc::Vector2D prev_ball_pos;
+  unsigned MAX_ROUND;
 
-  bool before_round;
-  unsigned round;
+  rcsc::Vector2D prev_ball_pos;
   enum
   {
     SCORE = 0,
@@ -72,7 +71,7 @@ private:
     SETUP,
     READY,
     TAKEN
-  } status = TAKEN;
+  } status = BEFORE;
   long timer = -1;
 
 private:
@@ -82,9 +81,7 @@ private:
   void analyse();
   void finalise();
   void print();
-  void conclude();
   bool crossGoalLine(const rcsc::SideID side, const rcsc::Vector2D &prev_ball_pos);
-  bool caughtBall();
 };
 
 #endif

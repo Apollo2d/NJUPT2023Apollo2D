@@ -39,7 +39,8 @@
 
 #include "penalty_trainer.h"
 
-namespace {
+namespace
+{
 
     PenaltyTrainer agent;
     std::shared_ptr<rcsc::AbstractClient> client;
@@ -84,28 +85,32 @@ int main(int argc, char **argv)
     client = agent.createConsoleClient();
     agent.setClient(client);
 
-    /*
-      You should add your copyright message here.
-     */
-    std::cout
-        << "*****************************************************************\n"
-        << " This program is modified by Apollo2D\n"
-        << " Copyright 2022-2023. Daedale.\n"
-        << " Nanjing University of Posts and Telecommunications\n"
-        << " All rights reserved.\n"
-        << "*****************************************************************\n"
-        << std::flush;
+    if (PenaltyTrainer::round == 1)
+    {
 
-    /*
-      Do NOT remove the following copyright notice!
-     */
-    std::cout
-        << "*****************************************************************\n"
-        << " This program is based on agent2d created by Hidehisa Akiyama.\n"
-        << " Copyright 2006 - 2011. Hidehisa Akiyama.\n"
-        << " All rights reserved.\n"
-        << "*****************************************************************\n"
-        << std::flush;
+        /*
+          You should add your copyright message here.
+         */
+        std::cout
+            << "*****************************************************************\n"
+            << " This program is modified by Apollo2D\n"
+            << " Copyright 2022-2023. Daedale.\n"
+            << " Nanjing University of Posts and Telecommunications\n"
+            << " All rights reserved.\n"
+            << "*****************************************************************\n"
+            << std::flush;
+
+        /*
+          Do NOT remove the following copyright notice!
+         */
+        std::cout
+            << "*****************************************************************\n"
+            << " This program is based on agent2d created by Hidehisa Akiyama.\n"
+            << " Copyright 2006 - 2011. Hidehisa Akiyama.\n"
+            << " All rights reserved.\n"
+            << "*****************************************************************\n"
+            << std::flush;
+    }
 
     client->run(&agent);
 
