@@ -80,7 +80,7 @@ private:
   void analyse();
   void finalise();
   void print();
-  bool ballCaught(const CoachPlayerObject* goalie);
+  bool ballCaught(const rcsc::CoachPlayerObject* goalie);
   bool crossGoalLine(const rcsc::SideID side, const rcsc::Vector2D &prev_ball_pos);
 };
 
