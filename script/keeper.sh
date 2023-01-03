@@ -1,22 +1,8 @@
-#!/bin/sh
-
-LIBPATH=/usr/local/lib
-if [ x"$LIBPATH" != x ]; then
-  if [ x"$LD_LIBRARY_PATH" = x ]; then
-    LD_LIBRARY_PATH=$LIBPATH
-  else
-    LD_LIBRARY_PATH=$LIBPATH:$LD_LIBRARY_PATH
-  fi
-  export LD_LIBRARY_PATH
-fi
-
-DIR=`dirname $0`
-
-player="${DIR}/*player"
+player="./*player"
 teamname="keeper"
 host="localhost"
 
-config_dir="${DIR}/formations-keeper"
+config_dir="./formations-keeper"
 
 debugopt="--offline_logging --debug --debug_server_connect"
 

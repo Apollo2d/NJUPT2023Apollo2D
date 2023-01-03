@@ -134,6 +134,7 @@ void PenaltyTrainer::doPenalty()
 void PenaltyTrainer::initPenalty() { 
     doMoveBall(Vector2D(0, 0), Vector2D(0, 0));
     doMovePlayer(world().teamNameLeft(), 1, Vector2D(0, 0));
+    doMovePlayer(world().teamNameRight(), 1, Vector2D(50, 0));
     timer = world().time().cycle();
     doChangeMode(PM_PenaltySetup_Left);
     status = SETUP;

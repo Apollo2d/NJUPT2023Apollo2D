@@ -1,6 +1,3 @@
-#!/bin/sh
-
-
 LIBPATH=/usr/local/lib
 if [ x"$LIBPATH" != x ]; then
   if [ x"$LD_LIBRARY_PATH" = x ]; then
@@ -11,10 +8,8 @@ if [ x"$LIBPATH" != x ]; then
   export LD_LIBRARY_PATH
 fi
 
-DIR=`dirname $0`
-
 host="localhost"
-trainer="${DIR}/*trainer"
+trainer="./*trainer"
 time=1
 default_keeper=on
 default_taker=on
@@ -61,15 +56,19 @@ do
   shift 2
 done
 
+rm *.log
+
 for i in $(seq 1 $time)
 do
-rcssserver server::coach=on server::penalty_shoot_outs=on server::pen_coach_moves_players = on &
+rcssserver server::coach=on server::penalty_shoot_outs=on &>/dev/null &
 sleep 1
-rcssmonitor&
-./taker.sh $default_taker&
+rcssmonitor &>/dev/null &
+./taker.sh $default_taker &
 sleep 1
-./keeper.sh $default_keeper&
-$trainer num=$i total=$time >> train.log
+./keeper.sh $default_keeper &
+$trainer num=$i total=$time > train.log
 kill $(pidof rcssserver) 
 kill $(pidof rcssmonitor)
 done
+
+cat train.log
