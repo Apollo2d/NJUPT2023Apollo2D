@@ -294,7 +294,7 @@ void PenaltyTrainer::stat()
     file << "You tried " << MAX_ROUND << " time" << (MAX_ROUND > 1 ? "s." : ".") << std::endl;
     file << "The kepper from Team " << world().teamNameRight() << " saved " << caught << (caught > 1 ? " balls." : " ball.") << std::endl;
     file << "Save Ratio is " << std::fixed << std::setprecision(2) << (caught * 100.0 / MAX_ROUND) << "%." << std::endl;
-    file << "The taker from Team " << world().teamNameLeft() << " scored " << score << (caught > 1 ? " balls." : " ball.") << std::endl;
+    file << "The taker from Team " << world().teamNameLeft() << " scored " << score << (score > 1 ? " balls." : " ball.") << std::endl;
     file << "Score Ratio is " << std::fixed << std::setprecision(2) << (score * 100.0 / MAX_ROUND) << "%." << std::endl;
     if (miss)
         file << "There " << (miss > 1 ? "were " : "was ") << miss << (miss > 1 ? " balls" : " ball") << " out of field uncaught." << std::endl;
