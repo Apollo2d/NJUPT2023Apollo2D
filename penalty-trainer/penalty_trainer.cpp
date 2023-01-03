@@ -42,6 +42,7 @@
 #include "penalty_trainer.h"
 
 #include <iomanip>
+#include <fstream>
 
 using namespace rcsc;
 
@@ -232,10 +233,6 @@ void PenaltyTrainer::analyse()
 
 void PenaltyTrainer::finalise()
 {
-    if (result == SCORE)
-        score++;
-    else if (result == MISS)
-        miss++;
     print();
     finalize();
     exit(0);
@@ -243,16 +240,54 @@ void PenaltyTrainer::finalise()
 
 void PenaltyTrainer::print()
 {
+    std::ofstream output;
+    if (ROUND_NUM == 1)
+        output.open("result.log", std::ios_base::openmode::_S_trunc);
+    else 
+        output.open("result.log", std::ios_base::openmode::_S_app);
     switch (result)
     {
     case MISS:
         std::cout << world().teamNameRight() << " missed!" << std::endl;
+        output << '|';
         break;
     case SCORE:
         std::cout << world().teamNameRight() << " scored!" << std::endl;
+        output << 'O';
         break;
     case CAUGHT:
         std::cout << world().teamNameLeft() << " caught it!" << std::endl;
+        output << 'X';
         break;
     }
+    output.close();
+    if (ROUND_NUM == MAX_ROUND)
+        stat();
+}
+
+void PenaltyTrainer::stat()
+{
+    std::fstream file;
+    file.open("result.log", std::ios_base::openmode::_S_in);
+    unsigned score = 0, miss = 0, caught = 0;
+    char ch;
+    for (unsigned i = 0; i < MAX_ROUND; i++) {
+        file >> ch;
+        switch (ch) {
+            case '|':miss++;break;
+            case 'X':caught++;break;
+            case 'O':score++;break;
+        }
+    }
+    file.close();
+    file.open("result.log", std::ios_base::openmode::_S_app);
+    file << std::endl;
+    file << "You tried " << MAX_ROUND << " time" << (MAX_ROUND > 1 ? "s." : ".") << std::endl;
+    file << "The kepper from Team " << world().teamNameRight() << " saved " << caught << (caught > 1 ? " balls." : " ball.") << std::endl;
+    file << "Save Ratio is " << std::fixed << std::setprecision(2) << (caught * 100.0 / MAX_ROUND) << "%." << std::endl;
+    file << "The taker from Team " << world().teamNameLeft() << " scored " << score << (caught > 1 ? " balls." : " ball.") << std::endl;
+    file << "Score Ratio is " << std::fixed << std::setprecision(2) << (score * 100.0 / MAX_ROUND) << "%." << std::endl;
+    if (miss)
+        file << "There " << (miss > 1 ? "were " : "was ") << miss << (miss > 1 ? " balls" : " ball") << " out of field uncaught." << std::endl;
+    file.close();
 }

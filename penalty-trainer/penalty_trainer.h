@@ -62,8 +62,6 @@ private:
     CAUGHT,
     MISS
   } result;
-  unsigned score = 0, miss = 0;
-  bool keeper_dir, ball_dir;
   enum
   {
     BEFORE = 0,
@@ -71,7 +69,7 @@ private:
     READY,
     TAKEN
   } status = BEFORE;
-  long timer = -1;
+  long timer;
 
 private:
   void initPenalty();
@@ -80,6 +78,7 @@ private:
   void analyse();
   void finalise();
   void print();
+  void stat();
   bool ballCaught(const rcsc::CoachPlayerObject* goalie);
   bool crossGoalLine(const rcsc::SideID side, const rcsc::Vector2D &prev_ball_pos);
 };

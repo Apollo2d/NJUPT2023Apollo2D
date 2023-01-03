@@ -1,0 +1,19 @@
+******************************************************************
+ librcsc rc2021
+ Copyright 2000 - 2007. Hidehisa Akiyama.
+ Copyright 2007 - 2011. Hidehisa Akiyama and Hiroki Shimora
+ Copyright 2011 -  Hidehisa Akiyama, Hiroki Shimora
+   Takuya Fukushima (2019-)
+ All rights reserved.
+******************************************************************
+*****************************************************************
+ This program is based on agent2d created by Hidehisa Akiyama.
+ Copyright 2006 - 2011. Hidehisa Akiyama and Hiroki Shimora.
+ All rights reserved.
+*****************************************************************
+HELIOS_taker: init ok.  unum: 1 side: l
+HELIOS_taker 1:  KickTable created.
+HELIOS_taker 1: [0, 1]  prepare see synch
+HELIOS_taker 1: [0, 6]  see synch.
+HELIOS_taker 1: waited 5 seconds. server down??
+HELIOS_taker 1: finished.

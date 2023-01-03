@@ -13,6 +13,7 @@ trainer="./*trainer"
 time=1
 default_keeper=on
 default_taker=on
+change_name=
 
 usage()
 {
@@ -38,12 +39,12 @@ do
       time=$2
       ;;
     -k)
-      if [ $2 -eq "off" ]; then
+      if [ $2 = "off" ]; then
         default_keeper="off"
       fi
       ;;
     -t)
-      if [ $2 -eq "off" ]; then
+      if [ $2 = "off" ]; then
         default_taker="off"
       fi
       ;;
@@ -56,6 +57,10 @@ do
   shift 2
 done
 
+if [ $default_taker = $default_keeper ];then
+change_name="change"
+fi
+
 rm *.log
 
 for i in $(seq 1 $time)
@@ -63,12 +68,13 @@ do
 rcssserver server::coach=on server::penalty_shoot_outs=on &>/dev/null &
 sleep 1
 rcssmonitor &>/dev/null &
-./taker.sh $default_taker &
+./taker.sh $default_taker $change_name &
 sleep 1
-./keeper.sh $default_keeper &
+./keeper.sh $default_keeper $change_name &
 $trainer num=$i total=$time >> train.log
 kill $(pidof rcssserver) 
 kill $(pidof rcssmonitor)
 done
 
 cat train.log
+cat result.log
