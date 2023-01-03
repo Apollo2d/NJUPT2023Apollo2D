@@ -151,7 +151,7 @@ bool PenaltyTrainer::pend()
     switch (status)
     {
     case SETUP:
-        if (world().time().cycle() > timer + ServerParam::DEFAULT_PEN_SETUP_WAIT)
+        if (world().time().cycle() > timer + ServerParam::DEFAULT_PEN_SETUP_WAIT / 2)
         {
             doChangeMode(PM_PenaltyReady_Left);
             timer = world().time().cycle();
@@ -173,11 +173,20 @@ bool PenaltyTrainer::pend()
     return false;
 }
 
-bool PenaltyTrainer::ballCaught(const CoachPlayerObject* goalie) {
-    //Todo
-    /////////////
-    /////////////
-    return false;
+bool PenaltyTrainer::ballCaught(const CoachPlayerObject* goalie) {    
+    auto vec = world().ball().pos() - goalie->pos();
+    auto face_ang = goalie->face();
+    auto dist = vec.length();
+    auto pos_ang = vec.dir();
+    auto rel_ang = face_ang - pos_ang;
+    rel_ang = rel_ang.abs();
+    if (rel_ang.degree() > 180)
+        rel_ang = 360 - rel_ang;
+    if (rel_ang.degree() > ServerParam::MAX_CATCH_ANGLE)
+        return false;
+    if (dist * rel_ang.cos() > ServerParam::DEFAULT_CATCH_AREA_W / 2 || dist * rel_ang.sin() > ServerParam::DEFAULT_CATCH_AREA_L)
+        return false;
+    return true;
 }
 
 bool PenaltyTrainer::crossGoalLine(const SideID side, const Vector2D &prev_ball_pos)

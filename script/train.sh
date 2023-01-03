@@ -61,7 +61,7 @@ if [ $default_taker = $default_keeper ];then
 change_name="change"
 fi
 
-rm *.log
+rm *.log *.rcl *.rcg
 
 for i in $(seq 1 $time)
 do
