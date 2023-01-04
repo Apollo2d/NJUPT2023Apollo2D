@@ -71,10 +71,10 @@ rcssmonitor &>/dev/null &
 ./taker.sh $default_taker $change_name &
 sleep 1
 ./keeper.sh $default_keeper $change_name &
-$trainer num=$i total=$time | awk '{if(NR <=19 || ($1 != "trainer:" && $1 != "OK" )) print $0}' >> train.log
+$trainer num=$i total=$time >> train.log
 kill $(pidof rcssserver) 
 kill $(pidof rcssmonitor)
 done
-
+awk '{if(NR <=19 || ($1 != "trainer:" && $1 != "OK" )) print $0}' train.log | awk '{if(NR <=19 || (NR-20)%11<=2) print $0}' > train.log
 cat train.log
 cat result.log
