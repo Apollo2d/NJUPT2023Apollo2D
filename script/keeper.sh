@@ -11,10 +11,7 @@ player="./your_player"
 teamname="Your_keeper"
 fi
 
-if [ $2 = "change" ]; then
 OPT="-h ${host} -t ${teamname}"
-fi
-
 OPT="${OPT} --config_dir ${config_dir}"
 OPT="${OPT} ${debugopt}"
 

@@ -13,7 +13,6 @@ trainer="./*trainer"
 time=1
 default_keeper="on"
 default_taker="on"
-change_name="unchange"
 
 usage()
 {
@@ -53,10 +52,6 @@ do
   shift 1
 done
 
-if [ $default_taker = $default_keeper ];then
-change_name="change"
-fi
-
 rm *.log *.rcl *.rcg
 
 for i in $(seq 1 $time)
@@ -64,13 +59,14 @@ do
 rcssserver server::coach=on server::penalty_shoot_outs=on &>/dev/null &
 sleep 1
 rcssmonitor &>/dev/null &
-./taker.sh $default_taker $change_name &
+./taker.sh $default_taker &
 sleep 1
-./keeper.sh $default_keeper $change_name &
+./keeper.sh $default_keeper &
 $trainer num=$i total=$time >> train.log
 kill $(pidof rcssserver) 
 kill $(pidof rcssmonitor)
 done
 awk '{if(NR <=19 || ($1 != "trainer:" && $1 != "OK" )) print $0}' train.log | awk '{if(NR <=19 || (NR-20)%11<=2) print $0}' > train.log
 cat train.log
+echo Record:
 cat result.log
