@@ -11,9 +11,9 @@ fi
 host="localhost"
 trainer="./*trainer"
 time=1
-default_keeper=on
-default_taker=on
-change_name=
+default_keeper="on"
+default_taker="on"
+change_name="unchange"
 
 usage()
 {
@@ -39,14 +39,10 @@ do
       time=$2
       ;;
     -k)
-      if [ $2 = "off" ]; then
-        default_keeper="off"
-      fi
+      default_keeper="off"
       ;;
     -t)
-      if [ $2 = "off" ]; then
-        default_taker="off"
-      fi
+      default_taker="off"
       ;;
     *)
       usage
@@ -54,7 +50,7 @@ do
       ;;
   esac
 
-  shift 2
+  shift 1
 done
 
 if [ $default_taker = $default_keeper ];then
