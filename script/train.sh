@@ -18,8 +18,11 @@ usage()
 {
   (echo "Usage: $0 [options]"
    echo "Possible options are:"
-   echo "  -h, --help           print this"
-   echo "  -n			specifies trial times") 1>&2
+   echo "  -h, --help   print this"
+   echo "  -n           specifies trial times"
+   echo "  -k           use your player as keeper"
+   echo "  -t           use your player as taker"
+  ) 1>&2
 }
 
 while [ $# -gt 0 ]
