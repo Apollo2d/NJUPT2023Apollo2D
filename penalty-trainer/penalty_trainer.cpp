@@ -257,15 +257,15 @@ void PenaltyTrainer::print()
     switch (result)
     {
     case MISS:
-        std::cout << world().teamNameRight() << " missed!" << std::endl;
+        std::cout << world().teamNameLeft() << " missed!" << std::endl;
         output << '|';
         break;
     case SCORE:
-        std::cout << world().teamNameRight() << " scored!" << std::endl;
+        std::cout << world().teamNameLeft() << " scored!" << std::endl;
         output << 'O';
         break;
     case CAUGHT:
-        std::cout << world().teamNameLeft() << " caught it!" << std::endl;
+        std::cout << world().teamNameRight() << " caught it!" << std::endl;
         output << 'X';
         break;
     }
