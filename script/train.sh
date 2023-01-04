@@ -39,6 +39,7 @@ do
         exit 1
       fi
       time=$2
+      shift 1
       ;;
     -k)
       default_keeper="off"
