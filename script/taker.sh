@@ -7,7 +7,7 @@ config_dir="./formations-taker"
 debugopt="--offline_logging --debug --debug_server_connect"
 
 if [ $1 = "off" ]; then
-player="./your_team"
+player="./your_player"
 teamname="Your_taker"
 fi
 
