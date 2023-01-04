@@ -1,3 +1,4 @@
 [submodule "your-team"]
 	path = your-team
 	url = https://github.com/helios-base/helios-base.git
+	ignore = untracked
