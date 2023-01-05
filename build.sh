@@ -8,6 +8,7 @@ cp src/sample_player ../bin/your_player
 cd ..
 mkdir build
 cd build
+sudo apt install -y cmake
 cmake .. -G "Unix Makefiles"
 make
 cd ..
