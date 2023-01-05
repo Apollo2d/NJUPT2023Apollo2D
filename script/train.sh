@@ -56,7 +56,7 @@ do
   shift 1
 done
 
-rm *.log *.rcl *.rcg
+rm *.log *.rcl *.rcg &>/dev/null
 
 for i in $(seq 1 $time)
 do
