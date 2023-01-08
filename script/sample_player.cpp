@@ -302,7 +302,7 @@ SamplePlayer::actionImpl()
     // penalty kick mode
     //
     if ( world().gameMode().type() == GameMode::PenaltySetup_ ) {
-    const static std::vector<int> order = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+    const static std::vector<int> order = { 1, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
     	M_worldmodel.setPenaltyKickTakerOrder(order);
 	}
     if ( world().gameMode().isPenaltyKickMode() )
