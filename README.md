@@ -12,20 +12,11 @@ Apollo2D组的Aryeth同学写了一个用于训练点球大战[^1]的1v1 Trainer
 |penalty-trainer|Trainer的源码|
 |script|运行所需脚本文件|
 |your-team|需要修改的球队代码|
-|||
 
 >请仅修改your-team目录中的C++源码，完成题目要求的任务。
 
 #### 一点建议
 your-team是以git submodule的方式fork了[HELIOS-BASE](https://github.com/helios-base/helios-base)，同学们可以按需修改.gitmodules文件将其与自己修改后的库链接起来。
-#### 必要修改
-请在your-team/src/sample_player.cpp中304行前添加以下内容：
-```cpp
-if ( world().gameMode().type() == GameMode::PenaltySetup_ ) {
-    const static std::vector<int> order = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-    M_worldmodel.setPenaltyKickTakerOrder(order);
-}
-```
 ## 二、项目安装配置与构建
 ### 前置配置
 请安装并配置Ubuntu虚拟机（建议18以上LTS版本），安装并配置好librcsc、rcssserver、rcssmonitor及其依赖（zlib、boost等），推荐安装doxygen辅助软件，推荐安装vscode用于编码工作，详细细节可以咨询于工（Kawhi Curry）。
@@ -41,8 +32,10 @@ git commit -a -m "MEASSAGE"
 ```sh
 /*提权命令*/
 #防止第二行运行时出现Permission Denied！
-sudo chmod 777 build.sh
-/*一键部署编译*/
+sudo chmod 777 *.sh
+/*第一次部署*/
+./init.sh
+/*一键编译*/
 #请球队代码更改后，运行该行代码完成编译，过程中可能需要输入密码。
 ./build.sh
 ```
