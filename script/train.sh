@@ -57,6 +57,7 @@ do
 done
 
 rm *.rcl *.rcg &>/dev/null
+mkdir backup &>/dev/null
 cp *.log backup &>/dev/null
 rm *.log &>/dev/null
 
